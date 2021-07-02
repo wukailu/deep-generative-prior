@@ -127,11 +127,26 @@ def get_img(img_path, resolution):
     return img.unsqueeze(0)
 
 
+def get_transform(resolution):
+    norm_mean = [0.5, 0.5, 0.5]
+    norm_std = [0.5, 0.5, 0.5]
+    transform = transforms.Compose([
+        CenterCropLongEdge(),
+        transforms.Resize(resolution),
+        transforms.ToTensor(),
+        transforms.Normalize(norm_mean, norm_std)
+    ])
+    return transform
+
+
 def save_img(image, path):
+    to_pil_image(image).save(path)
+
+
+def to_pil_image(image):
     image = np.uint8(255 * (image.cpu().detach().numpy() + 1) / 2.)
     image = np.transpose(image, (1, 2, 0))
-    image = Image.fromarray(image)
-    image.save(path)
+    return Image.fromarray(image)
 
 
 class AverageMeter(object):
@@ -189,7 +204,7 @@ class LRScheduler(object):
             if i >= num_group:
                 param_group['lr'] = 0
             else:
-                param_group['lr'] = learning_rate * ratio**i
+                param_group['lr'] = learning_rate * ratio ** i
 
 
 def create_logger(name, log_file, level=logging.INFO):

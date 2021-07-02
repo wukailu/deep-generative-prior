@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-WORK_PATH=$(dirname $0)
+WORK_PATH=${1:-results}
 IMAGE_PATH=${1:-data/ILSVRC2012_val_00008229.JPEG}
 CLASS=${2:-174}
 
